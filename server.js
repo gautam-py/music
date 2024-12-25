@@ -9,7 +9,7 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Unified endpoint
+// Unified endpoint to stream audio
 app.get('/stream-audio', (req, res) => {
     const url = req.query.url;
 
@@ -27,13 +27,13 @@ app.get('/stream-audio', (req, res) => {
         const audioProcess = exec(
             url,
             {
-                format: 'bestaudio',
-                output: '-', // Stream directly to stdout
+                format: 'bestaudio',      // Best quality audio
+                output: '-',              // Stream to stdout
             },
             { stdio: ['ignore', 'pipe', 'ignore'] }
         );
 
-        audioProcess.stdout.pipe(res);
+        audioProcess.stdout.pipe(res);  // Stream audio data to client
 
         audioProcess.on('error', (err) => {
             console.error('Error streaming audio:', err);
@@ -46,6 +46,6 @@ app.get('/stream-audio', (req, res) => {
 });
 
 // Start the server
-app.listen(port, '0.0.0.0', () => {
+app.listen(port, '0.0.0.0', () => {  // Listen on all interfaces
     console.log(`Server is running on port ${port}`);
 });
